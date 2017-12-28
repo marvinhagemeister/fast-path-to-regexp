@@ -17,21 +17,25 @@
     "test-watch": "npm t -- --watch",
     "coverage": "npm t -- --coverage",
     "prepublishOnly": "npm run lint && npm t && npm run build",
+    "bench": "ts-node benchmark/index.ts",
     "precommit": "lint-staged"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^21.1.4",
+    "benchmarkjs-pretty": "^2.0.0",
     "husky": "^0.14.3",
     "jest": "^21.2.1",
     "lint-staged": "^4.0.4",
+    "path-to-regexp": "^2.1.0",
     "prettier": "^1.6.1",
     "rimraf": "^2.6.1",
     "ts-jest": "^21.1.3",
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "tslint-config-sevenval": "^0.6.3",
-    "typescript": "^2.5.2"
+    "typescript": "^2.5.2",
+    "url-pattern": "^1.0.3"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
