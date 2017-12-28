@@ -1,3 +1,7 @@
 {
-  "extends": "tslint-config-sevenval"
+  "extends": "tslint-config-sevenval",
+  "rules": {
+    "no-conditional-assignment": false,
+    "curly": false
+  }
 }

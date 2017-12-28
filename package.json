@@ -1,15 +1,18 @@
 {
-  "name": "typescript-starter",
+  "name": "@marvinh/path-to-regexp",
   "version": "0.0.1",
-  "description": "typescript boilerplate project",
-  "main": "dist/index.js",
+  "description": "Ultra small (350b) and blazing fast path to regex generation",
+  "main": "dist/cjs/index.js",
+  "module": "dist/es/index.js",
+  "types": "dist/es/index.d.ts",
   "author": "Marvin Hagemeister <marvin@marvinhagemeister.de>",
   "license": "MIT",
   "scripts": {
     "cleanup": "rimraf dist/",
     "lint": "tslint 'src/**/*.ts' 'src/**/*.tsx'",
     "watch": "tsc -p tsconfig.build.json -w",
-    "build": "npm run cleanup && tsc -p tsconfig.build.json",
+    "build":
+      "npm run cleanup && tsc -p tsconfig.build-cjs.json && tsc -p tsconfig.build-es.json",
     "test": "tsc -p tsconfig.test.json && jest",
     "test-watch": "npm t -- --watch",
     "coverage": "npm t -- --coverage",
