@@ -66,8 +66,7 @@ export class PathRegExp {
     regex.lastIndex = 0;
     const res = regex.exec(url.toLowerCase());
     if (res === null) return out;
-
-    out.matched = url.slice(0, regex.lastIndex);
+    out.matched = res[0];
 
     // get parameters
     for (let i = 1; i < res.length; i++) {

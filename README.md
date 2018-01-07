@@ -16,15 +16,18 @@ yarn add @marvinh/path-to-regexp
 ```
 
 ```js
-import { pathToRegExp } from "@marvinh/path-to-regexp";
+import { PathRegExp } from "@marvinh/path-to-regexp";
 
-const match = pathToRegExp("foo/:bar/*/bob");
+const Path = new PathRegExp("foo/:bar/*/bob");
 
 // Returns params on match
-match("foo/bar"); // -> null (doesn't match)
-match("foo/asd/a/bob"); // -> { bar: "asd" } (match)
+Path.match("foo/asd/a/");
+// -> {
+//  matched: "", // The remaining part if any
+//  params: { bar: "asd" }
+// }
 ```
 
 ## License
 
-tba.
+`MIT`, see [License file](./LICENSE.md).
