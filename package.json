@@ -1,6 +1,6 @@
 {
   "name": "@marvinh/path-to-regexp",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Ultra small (350b) and blazing fast path to regex generation",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
