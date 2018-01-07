@@ -59,13 +59,14 @@ export class PathRegExp {
     this.absolute = res.absolute;
   }
 
-  match(url: string): MatchResult {
+  match(url: string): MatchResult | null {
     const { regex, params } = this;
-    const out: MatchResult = { matched: "", params: {} };
 
     regex.lastIndex = 0;
     const res = regex.exec(url.toLowerCase());
-    if (res === null) return out;
+    if (res === null) return null;
+
+    const out: MatchResult = { matched: "", params: {} };
     out.matched = res[0];
 
     // get parameters

@@ -1,7 +1,5 @@
 import { parse, PathRegExp } from "../index";
 
-const EMPTY = { matched: "", params: {} };
-
 describe("parse", () => {
   it("should escape /", () => {
     expect(parse("foo/").regex).toEqual(/foo\//);
@@ -37,7 +35,7 @@ describe("parse", () => {
 
 describe("pathToRegex", () => {
   it("should not match", () => {
-    expect(new PathRegExp("foo/").match("foo2/bar")).toEqual(EMPTY);
+    expect(new PathRegExp("foo/").match("foo2/bar")).toEqual(null);
   });
 
   it("should convert to lowercase", () => {
