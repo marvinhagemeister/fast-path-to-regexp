@@ -40,6 +40,8 @@ describe("pathToRegex", () => {
 
   it("should convert to lowercase", () => {
     expect(new PathRegExp("fOo/*").match("FOO/asd")).toEqual({
+      absolute: false,
+      path: "fOo/*",
       matched: "foo/asd",
       params: {},
     });
@@ -48,6 +50,8 @@ describe("pathToRegex", () => {
   it("should return no parameters", () => {
     expect(new PathRegExp("foo/*/bar").match("foo/bar/bar")).toEqual({
       matched: "foo/bar/bar",
+      path: "foo/*/bar",
+      absolute: false,
       params: {},
     });
   });
@@ -55,14 +59,20 @@ describe("pathToRegex", () => {
   it("should return parameters", () => {
     expect(new PathRegExp("foo/*").match("foo/bar/bob")).toEqual({
       matched: "foo/bar/bob",
+      path: "foo/*",
+      absolute: false,
       params: {},
     });
     expect(new PathRegExp("foo/").match("foo/bar/bob")).toEqual({
       matched: "foo/",
+      path: "foo/",
+      absolute: false,
       params: {},
     });
     expect(new PathRegExp("foo/:name/bob").match("foo/bar/bob")).toEqual({
       matched: "foo/bar/bob",
+      path: "foo/:name/bob",
+      absolute: false,
       params: {
         name: "bar",
       },
@@ -70,6 +80,8 @@ describe("pathToRegex", () => {
 
     expect(new PathRegExp("foo/:name/*/:foo").match("foo/bar/bob/foo")).toEqual(
       {
+        path: "foo/:name/*/:foo",
+        absolute: false,
         matched: "foo/bar/bob/foo",
         params: {
           name: "bar",

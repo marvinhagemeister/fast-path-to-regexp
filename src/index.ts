@@ -1,4 +1,6 @@
 export interface MatchResult {
+  path: string;
+  absolute: boolean;
   matched: string;
   params: Record<string, string>;
 }
@@ -52,7 +54,7 @@ export class PathRegExp {
   public params: string[];
   public absolute: boolean;
 
-  constructor(path: string) {
+  constructor(public path: string) {
     const res = parse(path);
     this.regex = res.regex;
     this.params = res.params;
@@ -66,8 +68,12 @@ export class PathRegExp {
     const res = regex.exec(url.toLowerCase());
     if (res === null) return null;
 
-    const out: MatchResult = { matched: "", params: {} };
-    out.matched = res[0];
+    const out: MatchResult = {
+      matched: res[0],
+      params: {},
+      path: this.path,
+      absolute: this.absolute,
+    };
 
     // get parameters
     for (let i = 1; i < res.length; i++) {
