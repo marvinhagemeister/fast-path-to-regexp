@@ -2,8 +2,12 @@ node_modules/
 .nyc_output/
 coverage/
 scripts/
+benchmark/
 src/
 .editorconfig
+.vscode/
+jest.config.js
+tsconfig*
 .npmignore
 .travis.yml
 .gitignore
