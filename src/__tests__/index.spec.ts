@@ -1,4 +1,6 @@
-import { parse, pathToRegExp } from "../regex";
+import { parse, PathRegExp } from "../index";
+
+const EMPTY = { matched: "", params: {} };
 
 describe("parse", () => {
   it("should escape /", () => {
@@ -7,16 +9,22 @@ describe("parse", () => {
   });
 
   it("should add ^ if beginning", () => {
-    expect(parse("/foo/").regex).toEqual(/^\/foo\//);
+    expect(parse("/foo/")).toEqual({
+      regex: /^\/foo\//,
+      absolute: true,
+      params: [],
+    });
   });
 
   it("should parse parameters", () => {
     expect(parse("foo/:name")).toEqual({
       regex: /foo\/(\w+)/,
+      absolute: false,
       params: ["name"],
     });
     expect(parse("foo/:name/bar")).toEqual({
       regex: /foo\/(\w+)\/bar/,
+      absolute: false,
       params: ["name"],
     });
   });
@@ -29,26 +37,34 @@ describe("parse", () => {
 
 describe("pathToRegex", () => {
   it("should not match", () => {
-    expect(pathToRegExp("foo/")("foo2/bar")).toEqual(null);
+    expect(new PathRegExp("foo/").match("foo2/bar")).toEqual(EMPTY);
   });
 
   it("should convert to lowercase", () => {
-    expect(pathToRegExp("fOo/*")("FOO/asd")).toEqual({});
+    expect(new PathRegExp("fOo/*").match("FOO/asd")).toEqual(EMPTY);
   });
 
   it("should return no parameters", () => {
-    expect(pathToRegExp("foo/*")("foo/bar")).toEqual({});
-    expect(pathToRegExp("foo/*/bar")("foo/bar/bar")).toEqual({});
+    expect(new PathRegExp("foo/*").match("foo/bar")).toEqual(EMPTY);
+    expect(new PathRegExp("foo/*/bar").match("foo/bar/bar")).toEqual(EMPTY);
   });
 
   it("should return parameters", () => {
-    expect(pathToRegExp("foo/:name/bob")("foo/bar/bob")).toEqual({
-      name: "bar",
+    expect(new PathRegExp("foo/:name/bob").match("foo/bar/bob")).toEqual({
+      matched: "",
+      params: {
+        name: "bar",
+      },
     });
 
-    expect(pathToRegExp("foo/:name/*/:foo")("foo/bar/bob/foo")).toEqual({
-      name: "bar",
-      foo: "foo",
-    });
+    expect(new PathRegExp("foo/:name/*/:foo").match("foo/bar/bob/foo")).toEqual(
+      {
+        matched: "",
+        params: {
+          name: "bar",
+          foo: "foo",
+        },
+      },
+    );
   });
 });

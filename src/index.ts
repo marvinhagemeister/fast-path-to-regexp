@@ -1,3 +1,8 @@
+export interface MatchResult {
+  matched: string;
+  params: Record<string, string>;
+}
+
 const escape: Record<any, string> = {
   42: ".*",
   46: ".",
@@ -6,7 +11,11 @@ const escape: Record<any, string> = {
 
 export function parse(input: string) {
   let reg = "";
-  if (input[0] === "/") reg += "^";
+  let absolute = false;
+  if (input[0] === "/") {
+    reg += "^";
+    absolute = true;
+  }
 
   input = input.toLowerCase();
 
@@ -34,26 +43,40 @@ export function parse(input: string) {
   return {
     regex: new RegExp(reg),
     params,
+    absolute,
   };
 }
 
-export function pathToRegExp(input: string) {
-  const { params, regex } = parse(input);
+export class PathRegExp {
+  public regex: RegExp;
+  public params: string[];
+  public absolute: boolean;
 
-  return (url: string): Record<string, string> | null => {
+  constructor(path: string) {
+    const res = parse(path);
+    this.regex = res.regex;
+    this.params = res.params;
+    this.absolute = res.absolute;
+  }
+
+  match(url: string): MatchResult {
+    const { regex, params } = this;
+    const out: MatchResult = { matched: "", params: {} };
+
     regex.lastIndex = 0;
     const res = regex.exec(url.toLowerCase());
-    if (res === null) return null;
+    if (res === null) return out;
+
+    out.matched = url.slice(0, regex.lastIndex);
 
     // get parameters
-    const found: Record<string, string> = {};
     for (let i = 1; i < res.length; i++) {
       const item = res[i];
       if (item) {
-        found[params[i - 1]] = item;
+        out.params[params[i - 1]] = item;
       }
     }
 
-    return found;
-  };
+    return out;
+  }
 }

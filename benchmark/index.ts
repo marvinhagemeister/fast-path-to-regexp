@@ -1,7 +1,7 @@
 import Benchmark from "benchmarkjs-pretty";
 import * as pathToRegExp from "path-to-regexp";
 import * as urlPattern from "url-pattern";
-import { pathToRegExp as custom } from "../src/index";
+import { PathRegExp as custom, PathRegExp } from "../src/index";
 
 const v1 = "/foo/:bar/*/:bob/boof";
 const v2 = "/foo/:bar/(.*)/:bob/boof";
@@ -26,7 +26,7 @@ export async function run() {
       }
     })
     .add("custom", () => {
-      if (custom(v1)(url)) {
+      if (new PathRegExp(v1).match(url)) {
         matches3++;
       }
     })
