@@ -90,4 +90,15 @@ describe("pathToRegex", () => {
       },
     );
   });
+
+  it("should match only if exact route", () => {
+    expect(new PathRegExp("/", true).match("/")).toEqual({
+      absolute: true,
+      matched: "/",
+      params: {},
+      path: "/",
+    });
+    expect(new PathRegExp("/", true).match("/foo")).toEqual(null);
+    expect(new PathRegExp("/", true).match("bar/foo")).toEqual(null);
+  });
 });

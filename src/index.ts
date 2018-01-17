@@ -54,7 +54,7 @@ export class PathRegExp {
   public params: string[];
   public absolute: boolean;
 
-  constructor(public path: string) {
+  constructor(public path: string, public exact: boolean = false) {
     const res = parse(path);
     this.regex = res.regex;
     this.params = res.params;
@@ -66,7 +66,11 @@ export class PathRegExp {
 
     regex.lastIndex = 0;
     const res = regex.exec(url.toLowerCase());
+    // No match
     if (res === null) return null;
+
+    // Exact, but url is longer than match
+    if (this.exact && res.input.slice(res[0].length).length > 0) return null;
 
     const out: MatchResult = {
       matched: res[0],
