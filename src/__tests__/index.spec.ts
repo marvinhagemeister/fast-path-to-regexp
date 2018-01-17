@@ -92,13 +92,13 @@ describe("pathToRegex", () => {
   });
 
   it("should match only if exact route", () => {
-    expect(new PathRegExp("/", true).match("/")).toEqual({
+    expect(new PathRegExp("/").match("/", true)).toEqual({
       absolute: true,
       matched: "/",
       params: {},
       path: "/",
     });
-    expect(new PathRegExp("/", true).match("/foo")).toEqual(null);
-    expect(new PathRegExp("/", true).match("bar/foo")).toEqual(null);
+    expect(new PathRegExp("/").match("/foo", true)).toEqual(null);
+    expect(new PathRegExp("/").match("bar/foo", true)).toEqual(null);
   });
 });
