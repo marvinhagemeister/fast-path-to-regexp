@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.5
+
+* `exact` should be an arg of `match()`
+
 ## 0.0.4
 
 * Add support for `exact` matches.
