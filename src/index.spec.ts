@@ -1,4 +1,4 @@
-import { parse, PathRegExp } from "../index";
+import { parse, PathRegExp } from "./index";
 
 describe("parse", () => {
   it("should escape /", () => {
