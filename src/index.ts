@@ -19,16 +19,16 @@ export function parse(input: string) {
     absolute = true;
   }
 
-  input = input.toLowerCase();
+  const str = input.toLowerCase();
 
   const params: string[] = [];
   let param = -1;
-  for (let i = 0; i < input.length; i++) {
-    const char = input.charCodeAt(i);
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
     if (char === 58) {
       param = i + 1;
     } else if (param !== -1) {
-      const isEnd = i === input.length - 1;
+      const isEnd = i === str.length - 1;
       const isSlash = char === 47;
 
       if (isSlash || isEnd) {
@@ -38,7 +38,7 @@ export function parse(input: string) {
       }
     } else {
       const n = escape[char];
-      reg += n ? n : input[i];
+      reg += n ? n : str[i];
     }
   }
 
