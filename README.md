@@ -1,6 +1,6 @@
 # Fast Path To RegExp
 
-Ultra small (just **350 bytes**) and super fast library for converting paths
+Ultra small and super fast library for converting paths
 to `RegExp`. Only implements a subset of [path-to-regexp](https://github.com/pillarjs/path-to-regexp).
 
 ```txt
