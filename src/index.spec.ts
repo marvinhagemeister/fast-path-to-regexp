@@ -31,6 +31,19 @@ describe("parse", () => {
     expect(parse("foo/*").regex).toEqual(/foo\/.*/);
     expect(parse("foo/*/asdf").regex).toEqual(/foo\/.*\/asdf/);
   });
+
+  it("should not lowercase parameters", () => {
+    expect(parse("foo/:ID")).toEqual({
+      regex: /foo\/(\w+)/,
+      absolute: false,
+      params: ["ID"],
+    });
+    expect(parse("foo/:ID/bar")).toEqual({
+      regex: /foo\/(\w+)\/bar/,
+      absolute: false,
+      params: ["ID"],
+    });
+  });
 });
 
 describe("pathToRegex", () => {
