@@ -103,11 +103,6 @@ export function createUrl(
 
   for (let i = 0; i < reg.params.length; i++) {
     const name = reg.params[i];
-    if (process.env.NODE_ENV !== "production") {
-      if (!params[name]) {
-        throw new Error(`Missing value for parameter "${name}"`);
-      }
-    }
     const needle = name === "*" ? "*" : ":" + name;
     path = path.replace(needle, params[name] as any);
   }

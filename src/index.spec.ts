@@ -140,11 +140,6 @@ describe("createUrl", () => {
     expect(createUrl(reg, { id: 123 })).toEqual("/foo/123");
   });
 
-  it("should throw if a parameter is missing", () => {
-    const reg = new PathRegExp("/foo/:id");
-    expect(() => createUrl(reg, { bar: 123 })).toThrow();
-  });
-
   it("should replace *", () => {
     const reg = new PathRegExp("/foo/*");
     expect(createUrl(reg, { "*": 123 })).toEqual("/foo/123");
