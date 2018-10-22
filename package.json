@@ -1,7 +1,7 @@
 {
   "name": "@marvinh/path-to-regexp",
-  "version": "0.0.5",
-  "description": "Ultra small (350b) and blazing fast path to regex generation",
+  "version": "1.0.0",
+  "description": "Ultra small and fast path to regex generation",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
   "types": "dist/es/index.d.ts",
