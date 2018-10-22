@@ -1,4 +1,4 @@
-import { parse, PathRegExp } from "./index";
+import { parse, PathRegExp, createUrl } from "./index";
 
 describe("parse", () => {
   it("should escape /", () => {
@@ -28,8 +28,14 @@ describe("parse", () => {
   });
 
   it("should parse *", () => {
-    expect(parse("foo/*").regex).toEqual(/foo\/.*/);
-    expect(parse("foo/*/asdf").regex).toEqual(/foo\/.*\/asdf/);
+    expect(parse("foo/*").regex).toEqual(/foo\/(.*)/);
+    expect(parse("foo/*/asdf").regex).toEqual(/foo\/(.*)\/asdf/);
+
+    expect(parse("foo/*/asdf")).toEqual({
+      regex: /foo\/(.*)\/asdf/,
+      absolute: false,
+      params: ["*"],
+    });
   });
 
   it("should not lowercase parameters", () => {
@@ -56,7 +62,9 @@ describe("pathToRegex", () => {
       absolute: false,
       path: "fOo/*",
       matched: "foo/asd",
-      params: {},
+      params: {
+        "*": "asd",
+      },
     });
   });
 
@@ -65,7 +73,9 @@ describe("pathToRegex", () => {
       matched: "foo/bar/bar",
       path: "foo/*/bar",
       absolute: false,
-      params: {},
+      params: {
+        "*": "bar",
+      },
     });
   });
 
@@ -74,7 +84,9 @@ describe("pathToRegex", () => {
       matched: "foo/bar/bob",
       path: "foo/*",
       absolute: false,
-      params: {},
+      params: {
+        "*": "bar/bob",
+      },
     });
     expect(new PathRegExp("foo/").match("foo/bar/bob")).toEqual({
       matched: "foo/",
@@ -99,6 +111,7 @@ describe("pathToRegex", () => {
         params: {
           name: "bar",
           foo: "foo",
+          "*": "bob",
         },
       },
     );
@@ -113,5 +126,27 @@ describe("pathToRegex", () => {
     });
     expect(new PathRegExp("/").match("/foo", true)).toEqual(null);
     expect(new PathRegExp("/").match("bar/foo", true)).toEqual(null);
+  });
+});
+
+describe("createUrl", () => {
+  it("should work without parameters", () => {
+    const reg = new PathRegExp("/foo/bar");
+    expect(createUrl(reg)).toEqual("/foo/bar");
+  });
+
+  it("should replace parameters", () => {
+    const reg = new PathRegExp("/foo/:id");
+    expect(createUrl(reg, { id: 123 })).toEqual("/foo/123");
+  });
+
+  it("should throw if a parameter is missing", () => {
+    const reg = new PathRegExp("/foo/:id");
+    expect(() => createUrl(reg, { bar: 123 })).toThrow();
+  });
+
+  it("should replace *", () => {
+    const reg = new PathRegExp("/foo/*");
+    expect(createUrl(reg, { "*": 123 })).toEqual("/foo/123");
   });
 });

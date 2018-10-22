@@ -6,7 +6,7 @@ export interface MatchResult {
 }
 
 const escape: Record<any, string> = {
-  42: ".*",
+  42: "(.*)",
   46: ".",
   47: "\\/",
 };
@@ -39,6 +39,7 @@ export function parse(input: string) {
     } else {
       const n = escape[char];
       reg += n ? n : str[i];
+      if (char === 42) params.push("*");
     }
   }
 
@@ -89,4 +90,27 @@ export class PathRegExp {
 
     return out;
   }
+}
+
+/**
+ * Build an url from a PathRegExp instance with custom parameters.
+ */
+export function createUrl(
+  reg: PathRegExp,
+  params: Record<string, string | number> = {},
+) {
+  let path = reg.path;
+
+  for (let i = 0; i < reg.params.length; i++) {
+    const name = reg.params[i];
+    if (process.env.NODE_ENV !== "production") {
+      if (!params[name]) {
+        throw new Error(`Missing value for parameter "${name}"`);
+      }
+    }
+    const needle = name === "*" ? "*" : ":" + name;
+    path = path.replace(needle, params[name] as any);
+  }
+
+  return path;
 }
