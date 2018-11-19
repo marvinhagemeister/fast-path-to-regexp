@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- Fix invalid es exports.
+
 ## 1.0.0
 
 - Parse `*` as a standard parameter
