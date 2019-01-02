@@ -1,6 +1,6 @@
 import Benchmark from "benchmarkjs-pretty";
-import * as pathToRegExp from "path-to-regexp";
-import * as urlPattern from "url-pattern";
+import pathToRegExp = require("path-to-regexp");
+import urlPattern = require("url-pattern");
 import { PathRegExp as custom, PathRegExp } from "../src/index";
 
 const v1 = "/foo/:bar/*/:bob/boof";
