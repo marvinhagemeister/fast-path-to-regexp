@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "esnext",
+    "moduleResolution": "node",
     "target": "es2017",
     "strict": true,
     "sourceMap": true,
     "pretty": true,
     "outDir": "dist/",
-    "declaration": true
+    "declaration": true,
+    "esModuleInterop": true
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "files": ["./src/index.ts"]
 }
