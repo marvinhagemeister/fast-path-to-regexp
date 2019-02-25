@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+- Add `umd` and `mjs` output formats.
+
 ## 1.0.1
 
 - Fix invalid es exports.
