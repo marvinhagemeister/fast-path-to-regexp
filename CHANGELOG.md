@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.0
+
+- **breaking:** Refactored exact match handling.
+- Normalize trailing slash 👍
+- Allow `.-_` in variable names 💯
+
 ## 1.0.2
 
 - Add `umd` and `mjs` output formats.
