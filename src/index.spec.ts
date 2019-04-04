@@ -2,8 +2,13 @@ import { parse, PathRegExp, createUrl } from "./index";
 
 describe("parse", () => {
   it("should escape /", () => {
+    expect(parse("foo/bar").regex).toEqual(/foo\/bar\//);
+    expect(parse("foo/bar/bob").regex).toEqual(/foo\/bar\/bob\//);
+  });
+
+  it("should normalize ending slash", () => {
     expect(parse("foo/").regex).toEqual(/foo\//);
-    expect(parse("foo/bar/").regex).toEqual(/foo\/bar\//);
+    expect(parse("foo/:id/").regex).toEqual(/foo\/([\w-_.]+)\//);
   });
 
   it("should add ^ if beginning", () => {
@@ -11,43 +16,49 @@ describe("parse", () => {
       regex: /^\/foo\//,
       absolute: true,
       params: [],
+      exact: false,
     });
   });
 
   it("should parse parameters", () => {
     expect(parse("foo/:name")).toEqual({
-      regex: /foo\/(\w+)/,
+      regex: /foo\/([\w-_.]+)\//,
       absolute: false,
       params: ["name"],
+      exact: false,
     });
     expect(parse("foo/:name/bar")).toEqual({
-      regex: /foo\/(\w+)\/bar/,
+      regex: /foo\/([\w-_.]+)\/bar\//,
       absolute: false,
       params: ["name"],
+      exact: false,
     });
   });
 
   it("should parse *", () => {
-    expect(parse("foo/*").regex).toEqual(/foo\/(.*)/);
-    expect(parse("foo/*/asdf").regex).toEqual(/foo\/(.*)\/asdf/);
+    expect(parse("foo/*").regex).toEqual(/foo\/(.*)\//);
+    expect(parse("foo/*/asdf").regex).toEqual(/foo\/(.*)\/asdf\//);
 
     expect(parse("foo/*/asdf")).toEqual({
-      regex: /foo\/(.*)\/asdf/,
+      regex: /foo\/(.*)\/asdf\//,
       absolute: false,
       params: ["*"],
+      exact: false,
     });
   });
 
   it("should not lowercase parameters", () => {
     expect(parse("foo/:ID")).toEqual({
-      regex: /foo\/(\w+)/,
+      regex: /foo\/([\w-_.]+)\//,
       absolute: false,
       params: ["ID"],
+      exact: false,
     });
     expect(parse("foo/:ID/bar")).toEqual({
-      regex: /foo\/(\w+)\/bar/,
+      regex: /foo\/([\w-_.]+)\/bar\//,
       absolute: false,
       params: ["ID"],
+      exact: false,
     });
   });
 });
@@ -89,7 +100,7 @@ describe("pathToRegex", () => {
       },
     });
     expect(new PathRegExp("foo/").match("foo/bar/bob")).toEqual({
-      matched: "foo/",
+      matched: "foo",
       path: "foo/",
       absolute: false,
       params: {},
@@ -117,15 +128,51 @@ describe("pathToRegex", () => {
     );
   });
 
+  it("should match parameters with 'special' characters", () => {
+    expect(new PathRegExp("foo/:p1.P2-p3_").match("foo/bar.asd/")).toEqual({
+      matched: "foo/bar.asd",
+      path: "foo/:p1.P2-p3_",
+      absolute: false,
+      params: {
+        "p1.P2-p3_": "bar.asd",
+      },
+    });
+    expect(
+      new PathRegExp("foo/:p1.P2-p3_", true).match("foo/bar.asd/"),
+    ).toEqual({
+      matched: "foo/bar.asd",
+      path: "foo/:p1.P2-p3_",
+      absolute: false,
+      params: {
+        "p1.P2-p3_": "bar.asd",
+      },
+    });
+
+    expect(
+      new PathRegExp("foo/:p1.P2-p3_", true).match("foo/bar.asd/asd"),
+    ).toEqual(null);
+  });
+
   it("should match only if exact route", () => {
-    expect(new PathRegExp("/").match("/", true)).toEqual({
+    expect(new PathRegExp("/", true).match("/")).toEqual({
       absolute: true,
       matched: "/",
       params: {},
       path: "/",
     });
-    expect(new PathRegExp("/").match("/foo", true)).toEqual(null);
-    expect(new PathRegExp("/").match("bar/foo", true)).toEqual(null);
+    expect(new PathRegExp("/", true).match("/foo")).toEqual(null);
+    expect(new PathRegExp("/", true).match("bar/foo")).toEqual(null);
+  });
+
+  it("should match exact route with parameters", () => {
+    expect(new PathRegExp("/:foo/bar", true).match("/aa-bb--cc/bar")).toEqual({
+      absolute: true,
+      matched: "/aa-bb--cc/bar",
+      params: {
+        foo: "aa-bb--cc",
+      },
+      path: "/:foo/bar",
+    });
   });
 });
 

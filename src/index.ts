@@ -5,13 +5,21 @@ export interface MatchResult {
   params: Record<string, string>;
 }
 
+const enum CHARS {
+  ASTERIKS = 42,
+  COLON = 58,
+  DOT = 46,
+  SLASH = 47,
+}
+
 const escape: Record<any, string> = {
-  42: "(.*)",
-  46: ".",
-  47: "\\/",
+  [CHARS.ASTERIKS]: "(.*)",
+  [CHARS.DOT]: ".",
+  [CHARS.SLASH]: "\\/",
 };
 
-export function parse(input: string) {
+export function parse(input: string, exact = false) {
+  input = normalize(input);
   let reg = "";
   let absolute = false;
   if (input[0] === "/") {
@@ -23,31 +31,41 @@ export function parse(input: string) {
 
   const params: string[] = [];
   let param = -1;
-  for (let i = 0; i < str.length; i++) {
+  const len = str.length;
+  for (let i = 0; i < len; i++) {
     const char = str.charCodeAt(i);
-    if (char === 58) {
+    if (char === CHARS.COLON) {
       param = i + 1;
     } else if (param !== -1) {
-      const isEnd = i === str.length - 1;
-      const isSlash = char === 47;
-
+      const isSlash = char === CHARS.SLASH;
+      const isEnd = i === len - 1;
       if (isSlash || isEnd) {
-        params.push(input.slice(param, isEnd ? i + 1 : i));
-        reg += "(\\w+)" + (isSlash ? escape[char] : "");
+        params.push(input.slice(param, i));
+        reg += "([\\w-_.]+)" + (isSlash ? escape[char] : "");
         param = -1;
       }
     } else {
       const n = escape[char];
       reg += n ? n : str[i];
-      if (char === 42) params.push("*");
+      if (char === CHARS.ASTERIKS) params.push("*");
     }
   }
+
+  if (exact) reg += "$";
 
   return {
     regex: new RegExp(reg),
     params,
     absolute,
+    exact,
   };
+}
+
+function normalize(url: string) {
+  // Normalize url
+  return url.length > 1 && url.charCodeAt(url.length - 1) === 47
+    ? url
+    : url + "/";
 }
 
 export class PathRegExp {
@@ -55,26 +73,24 @@ export class PathRegExp {
   public params: string[];
   public absolute: boolean;
 
-  constructor(public path: string) {
-    const res = parse(path);
+  constructor(public path: string, exact = false) {
+    const res = parse(path, exact);
     this.regex = res.regex;
     this.params = res.params;
     this.absolute = res.absolute;
   }
 
-  match(url: string, exact: boolean = false): MatchResult | null {
+  match(url: string): MatchResult | null {
     const { regex, params } = this;
+    url = normalize(url);
 
     regex.lastIndex = 0;
     const res = regex.exec(url.toLowerCase());
     // No match
     if (res === null) return null;
 
-    // Exact, but url is longer than match
-    if (exact && res.input.slice(res[0].length).length > 0) return null;
-
     const out: MatchResult = {
-      matched: res[0],
+      matched: res[0].slice(0, -1),
       params: {},
       path: this.path,
       absolute: this.absolute,
