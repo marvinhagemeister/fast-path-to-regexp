@@ -1,11 +1,11 @@
 {
   "name": "@marvinh/path-to-regexp",
   "amdName": "pathToRegExp",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Ultra small and fast path to regex generation",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.module.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "author": "Marvin Hagemeister <marvin@marvinhagemeister.de>",
@@ -18,26 +18,25 @@
     "test-watch": "npm t -- --watch",
     "coverage": "npm t -- --coverage",
     "prepublishOnly": "npm run lint && npm t && npm run build",
-    "bench": "ts-node -P benchmark/tsconfig.bench.json benchmark/index.ts",
-    "precommit": "lint-staged"
+    "bench": "ts-node -P benchmark/tsconfig.bench.json benchmark/index.ts"
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/jest": "^24.0.11",
-    "@types/node": "^11.13.0",
+    "@types/jest": "^24.0.13",
+    "@types/node": "^12.0.2",
     "benchmarkjs-pretty": "^2.0.0",
-    "husky": "^1.3.1",
-    "jest": "^24.7.1",
-    "lint-staged": "^8.1.5",
+    "husky": "^2.3.0",
+    "jest": "^24.8.0",
+    "lint-staged": "^8.1.7",
     "microbundle": "^0.11.0",
     "path-to-regexp": "^3.0.0",
-    "prettier": "^1.16.4",
+    "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
-    "ts-jest": "^24.0.1",
-    "ts-node": "^8.0.3",
-    "tslint": "^5.15.0",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.1.0",
+    "tslint": "^5.16.0",
     "tslint-config-sevenval": "^2.0.0",
-    "typescript": "^3.4.1",
+    "typescript": "^3.4.5",
     "url-pattern": "^1.0.3"
   },
   "lint-staged": {
@@ -46,5 +45,10 @@
       "npm run lint",
       "git add"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

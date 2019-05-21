@@ -68,11 +68,12 @@ describe("pathToRegex", () => {
     expect(new PathRegExp("foo/").match("foo2/bar")).toEqual(null);
   });
 
-  it("should convert to lowercase", () => {
-    expect(new PathRegExp("fOo/*").match("FOO/asd")).toEqual({
+  it("should be case sensitive", () => {
+    expect(new PathRegExp("fOo/*").match("FOO/asd")).toEqual(null);
+    expect(new PathRegExp("fOo/*").match("fOo/asd")).toEqual({
       absolute: false,
       path: "fOo/*",
-      matched: "foo/asd",
+      matched: "fOo/asd",
       params: {
         "*": "asd",
       },
@@ -172,6 +173,33 @@ describe("pathToRegex", () => {
         foo: "aa-bb--cc",
       },
       path: "/:foo/bar",
+    });
+  });
+
+  it("should match route with query parameters", () => {
+    expect(new PathRegExp("/foo?bar=:id", true).match("/foo?bar=123")).toEqual({
+      absolute: true,
+      matched: "/foo?bar=123",
+      params: {
+        id: "123",
+      },
+      path: "/foo?bar=:id",
+    });
+  });
+
+  it("should match route with query parameters #2", () => {
+    expect(
+      new PathRegExp("/foo?bar=:id&bob=:id2", true).match(
+        "/foo?bar=123&bob=abc",
+      ),
+    ).toEqual({
+      absolute: true,
+      matched: "/foo?bar=123&bob=abc",
+      params: {
+        id: "123",
+        id2: "abc",
+      },
+      path: "/foo?bar=:id&bob=:id2",
     });
   });
 });

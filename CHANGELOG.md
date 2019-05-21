@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.0
+
+- **breaking:** URLs are now case-sensitive to be complient with the RFC3986
+- Add support for custom variables in query parameters (`/foo?bar=:id`)
+- Switch back from `mjs` to `js` for better ecosystem compatibility
+
 ## 2.0.0
 
 - **breaking:** Refactored exact match handling.
