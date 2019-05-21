@@ -174,6 +174,33 @@ describe("pathToRegex", () => {
       path: "/:foo/bar",
     });
   });
+
+  it("should match route with query parameters", () => {
+    expect(new PathRegExp("/foo?bar=:id", true).match("/foo?bar=123")).toEqual({
+      absolute: true,
+      matched: "/foo?bar=123",
+      params: {
+        id: "123",
+      },
+      path: "/foo?bar=:id",
+    });
+  });
+
+  it("should match route with query parameters #2", () => {
+    expect(
+      new PathRegExp("/foo?bar=:id&bob=:id2", true).match(
+        "/foo?bar=123&bob=abc",
+      ),
+    ).toEqual({
+      absolute: true,
+      matched: "/foo?bar=123&bob=abc",
+      params: {
+        id: "123",
+        id2: "abc",
+      },
+      path: "/foo?bar=:id&bob=:id2",
+    });
+  });
 });
 
 describe("createUrl", () => {

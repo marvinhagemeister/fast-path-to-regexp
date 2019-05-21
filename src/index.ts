@@ -10,12 +10,16 @@ const enum CHARS {
   COLON = 58,
   DOT = 46,
   SLASH = 47,
+  QUESTION_MARK = 63,
+  AMPERSAND = 38,
 }
 
 const escape: Record<any, string> = {
   [CHARS.ASTERIKS]: "(.*)",
   [CHARS.DOT]: ".",
   [CHARS.SLASH]: "\\/",
+  [CHARS.QUESTION_MARK]: "\\?",
+  [CHARS.AMPERSAND]: "\\&",
 };
 
 export function parse(input: string, exact = false) {
@@ -37,11 +41,11 @@ export function parse(input: string, exact = false) {
     if (char === CHARS.COLON) {
       param = i + 1;
     } else if (param !== -1) {
-      const isSlash = char === CHARS.SLASH;
+      const isDelimiter = char === CHARS.SLASH || char === CHARS.AMPERSAND;
       const isEnd = i === len - 1;
-      if (isSlash || isEnd) {
-        params.push(input.slice(param, i));
-        reg += "([\\w-_.]+)" + (isSlash ? escape[char] : "");
+      if (isDelimiter || isEnd) {
+        params.push(input.slice(param, isEnd && !isDelimiter ? len : i));
+        reg += "([\\w-_.]+)" + (isDelimiter ? escape[char] : "");
         param = -1;
       }
     } else {
@@ -63,7 +67,8 @@ export function parse(input: string, exact = false) {
 
 function normalize(url: string) {
   // Normalize url
-  return url.length > 1 && url.charCodeAt(url.length - 1) === 47
+  return url.length > 1 &&
+    (url.charCodeAt(url.length - 1) === CHARS.SLASH || url.indexOf("=") > -1)
     ? url
     : url + "/";
 }
@@ -89,8 +94,12 @@ export class PathRegExp {
     // No match
     if (res === null) return null;
 
+    const match = res[0];
     const out: MatchResult = {
-      matched: res[0].slice(0, -1),
+      matched:
+        match.charCodeAt(match.length - 1) === CHARS.SLASH
+          ? match.slice(0, -1)
+          : match,
       params: {},
       path: this.path,
       absolute: this.absolute,
