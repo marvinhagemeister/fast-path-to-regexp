@@ -1,7 +1,7 @@
 {
   "name": "@marvinh/path-to-regexp",
   "amdName": "pathToRegExp",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Ultra small and fast path to regex generation",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
