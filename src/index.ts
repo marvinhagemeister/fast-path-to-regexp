@@ -23,15 +23,13 @@ const escape: Record<any, string> = {
 };
 
 export function parse(input: string, exact = false) {
-  input = normalize(input);
+  const str = normalize(input);
   let reg = "";
   let absolute = false;
-  if (input[0] === "/") {
+  if (str[0] === "/") {
     reg += "^";
     absolute = true;
   }
-
-  const str = input.toLowerCase();
 
   const params: string[] = [];
   let param = -1;
@@ -90,7 +88,7 @@ export class PathRegExp {
     url = normalize(url);
 
     regex.lastIndex = 0;
-    const res = regex.exec(url.toLowerCase());
+    const res = regex.exec(url);
     // No match
     if (res === null) return null;
 

@@ -68,11 +68,12 @@ describe("pathToRegex", () => {
     expect(new PathRegExp("foo/").match("foo2/bar")).toEqual(null);
   });
 
-  it("should convert to lowercase", () => {
-    expect(new PathRegExp("fOo/*").match("FOO/asd")).toEqual({
+  it("should be case sensitive", () => {
+    expect(new PathRegExp("fOo/*").match("FOO/asd")).toEqual(null);
+    expect(new PathRegExp("fOo/*").match("fOo/asd")).toEqual({
       absolute: false,
       path: "fOo/*",
-      matched: "foo/asd",
+      matched: "fOo/asd",
       params: {
         "*": "asd",
       },
