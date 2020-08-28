@@ -39,7 +39,10 @@ export function parse(input: string, exact = false) {
     if (char === CHARS.COLON) {
       param = i + 1;
     } else if (param !== -1) {
-      const isDelimiter = char === CHARS.SLASH || char === CHARS.AMPERSAND;
+      const isDelimiter =
+        char === CHARS.SLASH ||
+        char === CHARS.AMPERSAND ||
+        char === CHARS.QUESTION_MARK;
       const isEnd = i === len - 1;
       if (isDelimiter || isEnd) {
         params.push(input.slice(param, isEnd && !isDelimiter ? len : i));
@@ -66,7 +69,7 @@ export function parse(input: string, exact = false) {
 function normalize(url: string) {
   // Normalize url
   return url.length > 1 &&
-    (url.charCodeAt(url.length - 1) === CHARS.SLASH || url.indexOf("=") > -1)
+    (url.charCodeAt(url.length - 1) === CHARS.SLASH || url.indexOf("?") > -1)
     ? url
     : url + "/";
 }
